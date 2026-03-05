@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KazDar Trolleubus Project — GMod Trolleybus</title>
+    <!-- Шрифт Inter для современного вида -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f0f0;
+            color: #333333;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 25px;
+        }
+
+        /* ШАПКА С ФОНОМ И ЛОГОТИПОМ */
+        .header {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://i.ibb.co/dJ72jWjN/Airbrush-IMAGE-ENHANCER-1772731279774-1772731279774.png');
+            background-size: cover;
+            background-position: center;
+            padding: 45px 0 35px;
+            border-bottom: 4px solid #808080;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #e0e0e0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            background: #f0f0f0;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .title-block {
+            text-align: center;
+        }
+
+        .server-title {
+            font-size: 3.3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 5px;
+        }
+
+        .server-mode {
+            font-size: 1.4rem;
+            color: #ffffff;
+            background: rgba(128, 128, 128, 0.3);
+            backdrop-filter: blur(5px);
+            display: inline-block;
+            padding: 5px 25px;
+            border-radius: 50px;
+            border: 1px solid #808080;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* НАВИГАЦИЯ */
+        .nav-bar {
+            background: #d0d0d0;
+            padding: 15px 0;
+            border-bottom: 1px solid #808080;
+        }
+
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-btn {
+            background: #ffffff;
+            color: #333333;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.3rem;
+            padding: 12px 40px;
+            border-radius: 50px;
+            border-bottom: 4px solid #b0b0b0;
+            transition: 0.1s;
+            display: inline-block;
+            box-shadow: 0 5px 0 #909090;
+            cursor: pointer;
+            border: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .nav-btn:hover {
+            background: #f0f0f0;
+            border-bottom-width: 2px;
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #909090;
+        }
+
+        .nav-btn.active {
+            background: #808080;
+            color: #ffffff;
+            border-bottom-color: #505050;
+        }
+
+        /* СТРАНИЦЫ */
+        .page {
+            display: none;
+        }
+
+        .page.active-page {
+            display: block;
+        }
+
+        /* IP-БЛОК - для двух серверов */
+        .ip-block {
+            background: #d0d0d0;
+            padding: 30px 0;
+            border-bottom: 1px solid #808080;
+            margin-top: 30px;
+        }
+
+        .servers-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .connect-card {
+            background: #f0f0f0;
+            border: 1px solid #808080;
+            border-radius: 60px;
+            padding: 20px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 5px 0 #a0a0a0;
+        }
+
+        .server-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .server-icon {
+            font-size: 2.5rem;
+            line-height: 1;
+        }
+
+        .server-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .server-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333333;
+        }
+
+        .ip-address {
+            font-size: 1.2rem;
+            font-weight: 600;
+            font-family: monospace;
+            color: #333333;
+            letter-spacing: 1px;
+            background: #e0e0e0;
+            padding: 4px 15px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-top: 5px;
+            border: 1px solid #808080;
+        }
+
+        .connect-btn {
+            background: #ffffff;
+            border: none;
+            color: #333333;
+            font-weight: 700;
+            font-size: 1.3rem;
+            padding: 12px 35px;
+            border-radius: 60px;
+            cursor: pointer;
+            border-bottom: 4px solid #b0b0b0;
+            transition: 0.1s;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 5px 0 #909090;
+        }
+
+        .connect-btn:hover {
+            background: #f0f0f0;
+            border-bottom-width: 2px;
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #909090;
+        }
+
+        /* СЕТКА КАРТОЧЕК */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin: 50px 0;
+        }
+
+        .card {
+            background: #f0f0f0;
+            border: 1px solid #808080;
+            border-radius: 30px;
+            padding: 30px 25px;
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            border-color: #a0a0a0;
+            background: #e0e0e0;
+        }
+
+        .card h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #000000;
+            border-left: 5px solid #008080; /* Темный бирюзовый (teal) */
+            padding-left: 15px;
+        }
+
+        .card ul {
+            list-style: none;
+        }
+
+        .card li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+            color: #000000;
+            font-weight: 500;
+        }
+
+        .card li::before {
+            content: "▹";
+            color: #008080; /* Темный бирюзовый (teal) */
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        /* СОСТАВ ПРОЕКТА */
+        .team-section {
+            margin: 40px 0;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .team-card {
+            background: #f0f0f0;
+            border: 1px solid #808080;
+            border-radius: 40px;
+            padding: 35px 40px;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .team-card h2 {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            color: #505050;
+            text-align: center;
+            border-left: none;
+            border-bottom: 4px solid #808080;
+            padding-bottom: 15px;
+        }
+
+        .team-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px 30px;
+            justify-items: center;
+        }
+
+        .team-item {
+            background: #e0e0e0;
+            border-radius: 40px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid #808080;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .team-item a {
+            color: #333333;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .team-item a:hover {
+            color: #505050;
+        }
+
+        .steam-placeholder {
+            width: 28px;
+            height: 28px;
+            background: #c0c0c0;
+            border-radius: 50%;
+            display: inline-block;
+            text-align: center;
+            line-height: 28px;
+            font-size: 14px;
+            color: #505050;
+            font-weight: bold;
+        }
+
+        .team-role {
+            font-size: 0.8rem;
+            color: #505050;
+            display: block;
+        }
+
+        /* БЛОКИ Discord, Telegram, VK и Коллекция */
+        .links-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 50px 0;
+        }
+
+        .link-block {
+            background: #f0f0f0;
+            border-radius: 40px;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 15px;
+            border: 1px solid #808080;
+        }
+
+        .link-block h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #333333;
+        }
+
+        .link-btn {
+            background: #ffffff;
+            color: #333333;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding: 12px 25px;
+            border-radius: 40px;
+            border-bottom: 4px solid #b0b0b0;
+            transition: 0.1s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .link-btn:hover {
+            background: #f0f0f0;
+            border-bottom-width: 2px;
+            transform: translateY(2px);
+        }
+
+        .discord-btn {
+            background: #5865F2;
+            color: white;
+            border-bottom-color: #3b4b9e;
+        }
+
+        .discord-btn:hover {
+            background: #6874ff;
+        }
+
+        .telegram-btn {
+            background: #0088cc;
+            color: white;
+            border-bottom-color: #006699;
+        }
+
+        .telegram-btn:hover {
+            background: #00a0e6;
+        }
+
+        .vk-btn {
+            background: #0077ff;
+            color: white;
+            border-bottom-color: #0055b3;
+        }
+
+        .vk-btn:hover {
+            background: #3399ff;
+        }
+
+        .collection-btn {
+            background: #3f6bb0;
+            color: white;
+            border-bottom-color: #25477a;
+        }
+
+        .collection-btn:hover {
+            background: #5380cc;
+        }
+
+        /* Футер */
+        .footer {
+            background: #c0c0c0;
+            padding: 25px 0;
+            text-align: center;
+            border-top: 1px solid #808080;
+            color: #333333;
+            margin-top: 40px;
+        }
+
+        /* Адаптация */
+        @media (max-width: 1100px) {
+            .links-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .link-block {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .servers-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .connect-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .server-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .links-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .server-title {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ШАПКА С ФОНОМ И ЛОГОТИПОМ -->
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="https://i.ibb.co/yBN0qPzF/Kaz-Dar-remake-logo.png" alt="KazDar Logo">
+                </div>
+                <div class="title-block">
+                    <div class="server-title">KazDar Trolleubus Project</div>
+                    <div class="server-mode">Trolleybus • Garry's Mod</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- НАВИГАЦИЯ -->
+    <div class="nav-bar">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><button class="nav-btn active" onclick="switchPage('main')">🏠 ГЛАВНАЯ</button></li>
+                <li><button class="nav-btn" onclick="switchPage('team')">👥 СОСТАВ ПРОЕКТА</button></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- СТРАНИЦА "ГЛАВНАЯ" -->
+    <div id="main-page" class="page active-page">
+        <!-- БЛОК ПОДКЛЮЧЕНИЯ (ДВА СЕРВЕРА) -->
+        <div class="ip-block">
+            <div class="container">
+                <div class="servers-row">
+                    <!-- Первый сервер - KazDar NoRank #1 -->
+                    <div class="connect-card">
+                        <div class="server-info">
+                            <span class="server-icon">🚎</span>
+                            <div class="server-details">
+                                <span class="server-name">KazDar NoRank #1</span>
+                                <span class="ip-address">45.11.16.73:7015</span>
+                            </div>
+                        </div>
+                        <a href="steam://connect/45.11.16.73:7015" class="connect-btn">▶ Играть</a>
+                    </div>
+                    
+                    <!-- Второй сервер - KazDar RolePlay -->
+                    <div class="connect-card">
+                        <div class="server-info">
+                            <span class="server-icon">🚍</span>
+                            <div class="server-details">
+                                <span class="server-name">KazDar RolePlay</span>
+                                <span class="ip-address">45.11.16.75:7035</span>
+                            </div>
+                        </div>
+                        <a href="steam://connect/45.11.16.75:7035" class="connect-btn">▶ Играть</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ТРИ КАРТОЧКИ: Описание, Особенности, Правила -->
+        <div class="container">
+            <div class="info-grid">
+                <!-- Описание -->
+                <div class="card">
+                    <h2>📖 Описание</h2>
+                    <ul>
+                        <li>Дружелюбное комьюнити</li>
+                        <li>Кастомные троллейбусы</li>
+                        <li>Регулярные ивенты</li>
+                        <li>Добрая администрация</li>
+                    </ul>
+                </div>
+                <!-- Особенности -->
+                <div class="card">
+                    <h2>✨ Особенности</h2>
+                    <ul>
+                        <li>Большое количество троллейбусов</li>
+                        <li>Уникальные кастомные модели</li>
+                        <li>Регулярные РП сессии</li>
+                        <li>Интересные маршруты</li>
+                    </ul>
+                </div>
+                <!-- Правила -->
+                <div class="card">
+                    <h2>⚖️ Правила</h2>
+                    <ul>
+                        <li>Запрещена помеха работе сервера</li>
+                        <li>Запрещены оскорбления</li>
+                        <li>Отыгровка РП обязательна</li>
+                        <li>Запрещены читы</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- БЛОКИ Discord, Telegram, VK и Коллекция -->
+        <div class="container">
+            <div class="links-row">
+                <!-- Discord блок -->
+                <div class="link-block">
+                    <h3>💬 Discord</h3>
+                    <a href="https://discord.gg/ZxxHRFd7" target="_blank" class="link-btn discord-btn">
+                        📢 Присоединиться
+                    </a>
+                </div>
+                
+                <!-- Telegram блок -->
+                <div class="link-block">
+                    <h3>📱 Telegram</h3>
+                    <a href="https://t.me/KazDarProject" target="_blank" class="link-btn telegram-btn">
+                        ✈️ Подписаться
+                    </a>
+                </div>
+
+                <!-- VK блок -->
+                <div class="link-block">
+                    <h3>📘 VKontakte</h3>
+                    <a href="https://vk.com/kazdarproject" target="_blank" class="link-btn vk-btn">
+                        👍 Вступить
+                    </a>
+                </div>
+                
+                <!-- Коллекция блок -->
+                <div class="link-block">
+                    <h3>👀 Коллекция</h3>
+                    <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3480395942" target="_blank" class="link-btn collection-btn">
+                        ✔ Скачать
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- СТРАНИЦА "СОСТАВ ПРОЕКТА" -->
+    <div id="team-page" class="page">
+        <!-- СОСТАВ ПРОЕКТА -->
+        <div class="container">
+            <div class="team-section">
+                <div class="team-card">
+                    <h2>👥 Состав проекта</h2>
+                    <div class="team-list">
+                        <div class="team-item"><a href="https://steamcommunity.com/profiles/76561199511076166/" target="_blank"><span class="steam-placeholder">👑</span> Ndyes_RUS <span class="team-role">создатель</span></a></div>
+                        <div class="team-item"><a href="https://steamcommunity.com/id/Madesome" target="_blank"><span class="steam-placeholder">👑</span> Beluga <span class="team-role">создатель</span></a></div>
+                        <div class="team-item"><a href="https://steamcommunity.com/profiles/76561199184515201" target="_blank"><span class="steam-placeholder">⚡</span> Mt life <span class="team-role">главный куратор</span></a></div>
+                        <div class="team-item"><a href="https://steamcommunity.com/profiles/76561199805868216" target="_blank"><span class="steam-placeholder">⚡</span> SlowFox-_- <span class="team-role">куратор</span></a></div>
+                        <div class="team-item"><a href="https://steamcommunity.com/profiles/76561199310085214/" target="_blank"><span class="steam-placeholder">🛡️</span> Супер сус <span class="team-role">ст.админ</span></a></div>
+                        <div class="team-item"><a href="https://steamcommunity.com/profiles/76561198156223413/" target="_blank"><span class="steam-placeholder">🛡️</span> s̳e̳i̳j̳o̳m̳a̳r̳u̳ <span class="team-role">тех. админ</span></a></div>
+                        <div class="team-item"><a href="https://steamcommunity.com/profiles/76561199570561222" target="_blank"><span class="steam-placeholder">🛡️</span> Mamont <span class="team-role">тех. админ</span></a></div>
+                        <div class="team-item"><a href="https://steamcommunity.com/profiles/76561198772149373" target="_blank"><span class="steam-placeholder">🛡️</span> foxy34945 <span class="team-role">тех. админ</span></a></div>
+                        <div class="team-item"><a href="https://steamcommunity.com/id/mr_gusev/" target="_blank"><span class="steam-placeholder">🛡️</span> Mr Gusev <span class="team-role">тех. админ</span></a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ФУТЕР -->
+    <div class="footer">
+        <div class="container">
+            <p>© 2026 KazDar Trolleubus Project — официальный сайт сообщества. Garry's Mod Trolleybus server.</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">Играйте с удовольствием! 🎮</p>
+        </div>
+    </div>
+
+    <script>
+        function switchPage(page) {
+            // Скрываем все страницы
+            document.getElementById('main-page').classList.remove('active-page');
+            document.getElementById('team-page').classList.remove('active-page');
+            
+            // Показываем выбранную страницу
+            document.getElementById(page + '-page').classList.add('active-page');
+            
+            // Обновляем активное состояние кнопок
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Активируем нужную кнопку
+            if (page === 'main') {
+                buttons[0].classList.add('active');
+            } else {
+                buttons[1].classList.add('active');
+            }
+        }
+    </script>
+
+</body>
+</html>
